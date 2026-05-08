@@ -84,13 +84,25 @@ const SectionHeading = ({ children, light = false }: { children: React.ReactNode
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showBrand, setShowBrand] = useState(true);
   const [activeCategory, setActiveCategory] = useState(Object.keys(MENU_DATA)[0]);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      const scrollY = window.scrollY;
+      setScrolled(scrollY > 50);
+
+      const aboutSection = document.getElementById('o-nas');
+      if (aboutSection && window.innerWidth < 768) {
+        const rect = aboutSection.getBoundingClientRect();
+        // Show brand when 'O nas' section is near the top of viewport
+        setShowBrand(rect.top <= 100);
+      } else {
+        setShowBrand(true);
+      }
     };
     window.addEventListener('scroll', handleScroll);
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -106,13 +118,24 @@ export default function App() {
       {/* Navigation */}
       <nav className={`fixed w-full z-50 transition-all duration-700 ${scrolled ? 'bg-brand-cream/95 backdrop-blur-sm shadow-[0_1px_0_0_rgba(26,26,26,0.05)] py-4' : 'bg-transparent py-10'}`}>
         <div className="max-w-7xl mx-auto px-8 flex justify-between items-end">
-          <a href="#" className="flex items-center gap-6">
-            <img src={LOGO_URL} alt="Logo" className={`rounded-full border border-brand-dark/10 object-contain transition-all duration-700 ${scrolled ? 'h-12 w-12' : 'h-20 w-20'}`} />
-            <div>
-              <h1 className="text-3xl uppercase tracking-widest font-light leading-none mb-1">Dwa Noże</h1>
-              <p className="font-sans text-[9px] uppercase tracking-widest-plus opacity-60">Restauracja / Ustroń</p>
-            </div>
-          </a>
+          <AnimatePresence>
+            {showBrand && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex items-center gap-6"
+              >
+                <a href="#" className="flex items-center gap-6">
+                  <img src={LOGO_URL} alt="Logo" className={`rounded-full border border-brand-dark/10 object-contain transition-all duration-700 ${scrolled ? 'h-12 w-12' : 'h-20 w-20'}`} />
+                  <div>
+                    <h1 className="text-3xl uppercase tracking-widest font-light leading-none mb-1">Dwa Noże</h1>
+                    <p className="font-sans text-[9px] uppercase tracking-widest-plus opacity-60">Restauracja / Ustroń</p>
+                  </div>
+                </a>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-10 font-sans text-[10px] uppercase tracking-widest font-medium">
