@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "Montserrat", sans-serif;
+  --color-brand-cream: #fdfcfb;
+  --color-brand-dark: #1a1a1a;
+  --color-subtle: rgba(26, 26, 26, 0.08);
+}
+
+@layer base {
+  body {
+    @apply bg-brand-cream text-brand-dark font-serif antialiased selection:bg-brand-dark selection:text-white;
+  }
+}
+
+.tracking-widest-plus {
+  letter-spacing: 0.25em;
+}
+
+.photo-card-hover {
+  @apply grayscale-[15%] transition-all duration-500 hover:grayscale-0;
+}
+
+.border-subtle {
+  @apply border-brand-dark/10;
+}
